@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Notification</title>
+
+    <script>
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered.');
+                    if (Notification.permission !== 'granted') {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === 'granted') {
+                                console.log('Notification permission granted.');
+
+                                const options = {
+                                    userVisibleOnly: true,
+                                    applicationServerKey: "BILFZbA77VvUcdIcSZNNx8-F7J1zL_30nwe19tN27COw7JBT2Jt99grBkjoxJtTmSHqT9QKjQmA8bRzPmMna52g",
+                                };
+
+                                registration.pushManager.subscribe(options).then(
+                                    (pushSubscription) => {
+                                        console.log(pushSubscription);
+                                        console.log(pushSubscription.endpoint);
+                                        // The push subscription details needed by the application
+                                        // server are now available, and can be sent to it using,
+                                        // for example, an XMLHttpRequest.
+                                    },
+                                    (error) => {
+                                        // During development it often helps to log errors to the
+                                        // console. In a production environment it might make sense to
+                                        // also report information about errors back to the
+                                        // application server.
+                                        console.error(error);
+                                    },
+                                );
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Push Notification POC</h2>
+</body>
+
+</html>
